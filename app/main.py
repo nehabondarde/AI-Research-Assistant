@@ -1,6 +1,10 @@
-import streamlit as st
-import fitz
+import sys
+from pathlib import Path
 
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
+import streamlit as st
+from src.pdf_processor import extract_text_from_pdf
 st.set_page_config(
     page_title="AI Research Paper Assistant",
     page_icon="📚"
@@ -8,22 +12,20 @@ st.set_page_config(
 
 st.title("📚 AI Research Paper Assistant")
 
+st.write(
+    "Upload a research paper and extract its contents."
+)
+
 uploaded_file = st.file_uploader(
-    "Upload a PDF",
+    "Upload PDF",
     type=["pdf"]
 )
 
 if uploaded_file:
 
-    pdf = fitz.open(
-        stream=uploaded_file.read(),
-        filetype="pdf"
+    text = extract_text_from_pdf(
+        uploaded_file
     )
-
-    text = ""
-
-    for page in pdf:
-        text += page.get_text()
 
     st.success("PDF processed successfully!")
 
