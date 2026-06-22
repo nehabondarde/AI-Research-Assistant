@@ -5,6 +5,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 import streamlit as st
 from src.pdf_processor import extract_text_from_pdf
+from src.summarizer import generate_summary
 st.set_page_config(
     page_title="AI Research Paper Assistant",
     page_icon="📚"
@@ -26,6 +27,12 @@ if uploaded_file:
     text = extract_text_from_pdf(
         uploaded_file
     )
+
+    with st.spinner("Generating AI Summary..."):
+        summary = generate_summary(text)
+
+    st.subheader("AI Summary")
+    st.write(summary)
 
     st.success("PDF processed successfully!")
 
