@@ -6,6 +6,8 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 import streamlit as st
 from src.pdf_processor import extract_text_from_pdf
 from src.summarizer import generate_summary
+from src.qa import ask_question
+
 st.set_page_config(
     page_title="AI Research Paper Assistant",
     page_icon="📚"
@@ -24,15 +26,37 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file:
 
-    text = extract_text_from_pdf(
-        uploaded_file
-    )
+    text = extract_text_from_pdf(uploaded_file)
 
     with st.spinner("Generating AI Summary..."):
         summary = generate_summary(text)
 
     st.subheader("AI Summary")
     st.write(summary)
+
+    st.divider()
+
+    st.subheader("Ask Questions About the Paper")
+
+    question = st.text_input(
+        "Enter your question"
+    )
+
+    if question:
+
+        with st.spinner("Finding answer..."):
+
+            try:
+                answer = ask_question(
+                    text,
+                    question
+                )
+
+                st.subheader("Answer")
+                st.write(answer)
+
+            except Exception as e:
+                st.error(f"QA Error: {e}")
 
     st.success("PDF processed successfully!")
 
