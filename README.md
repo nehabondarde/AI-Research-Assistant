@@ -17,7 +17,7 @@ An AI-powered Research Paper Assistant that helps users understand research pape
 
 ## 🖼️ Application Preview
 
-> Add screenshots here after taking them.
+
 
 ### Home Page
 ![Home](images/home.png)
