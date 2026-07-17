@@ -1,33 +1,39 @@
-import google.generativeai as genai
 import os
 from dotenv import load_dotenv
+from groq import Groq
 
 load_dotenv()
 
-genai.configure(
-    api_key=os.getenv("GEMINI_API_KEY")
-)
-
-model = genai.GenerativeModel(
-    "gemini-2.5-flash"
+client = Groq(
+    api_key=os.getenv("GROQ_API_KEY")
 )
 
 def generate_summary(text):
 
     prompt = f"""
-    Summarize this research paper.
+You are an AI Research Assistant.
 
-    Include:
-    1. Objective
-    2. Methodology
-    3. Results
-    4. Conclusion
+Summarize the following research paper.
 
-    Research Paper:
+Paper:
+{text[:15000]}
 
-    {text[:15000]}
-    """
+Your summary should include:
+- Objective
+- Methodology
+- Key Findings
+- Conclusion
+"""
 
-    response = model.generate_content(prompt)
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        temperature=0.3
+    )
 
-    return response.text
+    return response.choices[0].message.content
